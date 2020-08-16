@@ -4,3 +4,6 @@ yarn.lock
 /tmp/
 .env
 /dist/
+/linux-666595/
+*.zip
+/chromium-data/

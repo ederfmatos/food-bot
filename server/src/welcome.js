@@ -1,6 +1,5 @@
 import { version } from '../package.json';
 const logo = `
-                                                                                                                                                           
                                                                        dddddddd                                                                                  
 FFFFFFFFFFFFFFFFFFFFFF                                                 d::::::d      BBBBBBBBBBBBBBBBB                                                    tttt          
 F::::::::::::::::::::F                                                 d::::::d      B::::::::::::::::B                                                ttt:::t          
