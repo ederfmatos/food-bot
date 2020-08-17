@@ -1,66 +1,201 @@
-WAPI.waitNewMessages(false, async messages => {
-  for (let i = 0; i < messages.length; i++) {
-    debugger;
-    let message = messages[i];
+function removeArrayItems(list, count) {
+  return list.slice(0, list.length - count);
+}
 
-    window.log(`Message from ${message.chatId.user} checking..`);
+class Inject {
+  constructor() {
+    this.attendances = [];
+  }
 
-    if (intents.blocked.indexOf(message.chatId.user) >= 0) {
-      window.log('number is blocked by BOT. no reply');
-      return;
+  start() {
+    this.waitNewMessages();
+  }
+
+  waitNewMessages() {
+    WAPI.waitNewMessages(false, async messages => {
+      for (const message of messages) {
+        if (this.isBlockedMessage(message)) {
+          continue;
+        }
+
+        const response = this.addNewAttendance(message);
+        WAPI.sendMessage2(message.chatId._serialized, response);
+      }
+    });
+  }
+
+  getResponse(attendance) {
+    if (!attendance.started) {
+      attendance.started = true;
+      return this.getInitialMessage(messages, attendance);
     }
 
-    if (message.type == 'chat') {
-      if (message.isGroupMsg == true) {
-        window.log(
-          'Message received in group and group reply is off. so will not take any actions.'
-        );
-        return;
-      }
-
-      const exactMatch = intents.bot.find(obj =>
-        obj.exact.find(ex => ex == message.body.toLowerCase())
-      );
-
-      let response = '';
-      if (exactMatch != undefined) {
-        response = await resolveSpintax(exactMatch.response);
-        window.log(`Replying with ${response}`);
-      } else {
-        response = await resolveSpintax(intents.noMatch);
-        window.log(
-          `No exact match found. So replying with ${response} instead`
-        );
-      }
-
-      const PartialMatch = intents.bot.find(obj =>
-        obj.contains.find(ex => message.body.toLowerCase().search(ex) > -1)
-      );
-
-      if (PartialMatch != undefined) {
-        response = await resolveSpintax(PartialMatch.response);
-        window.log(`Replying with ${response}`);
-      } else {
-        console.log('No partial match found');
-      }
-
-      WAPI.sendSeen(message.chatId._serialized);
-      WAPI.sendMessage2(message.chatId._serialized, response);
-
-      if ((exactMatch || PartialMatch).file != undefined) {
-        window
-          .getFile((exactMatch || PartialMatch).file)
-          .then(base64Data => {
-            WAPI.sendImage(
-              base64Data,
-              message.chatId._serialized,
-              (exactMatch || PartialMatch).file
-            );
-          })
-          .catch(error => {
-            window.log('Error in sending file\n' + error);
-          });
-      }
+    try {
+      return this.showOptions(attendance, 0, messages, messages);
+    } catch (error) {
+      window.log(`Ocorreu um erro: ${error}`);
+      return 'Foi mal, deu um erro aqui';
     }
   }
-});
+
+  addNewAttendance(message) {
+    let attendance = this.findAttendance(message);
+
+    if (!attendance) {
+      attendance = this.createAttendance(message);
+    }
+
+    attendance.messages.push({ text: message.body });
+
+    this.attendances.push(attendance);
+    return this.getResponse(attendance);
+  }
+
+  createAttendance(message) {
+    return {
+      id: message.from,
+      createdAt: new Date().getTime(),
+      customer: {
+        id: message.from,
+        name: message.sender.pushname,
+        phoneNumber: message.from.replace('@c.us', ''),
+      },
+      finishedAt: null,
+      messages: [],
+      started: false,
+    };
+  }
+
+  findAttendance(message) {
+    return this.attendances.find(
+      attendance =>
+        attendance.customer.id === message.from &&
+        attendance.finishedAt === null
+    );
+  }
+
+  getSalution() {
+    const hours = new Date().getHours();
+
+    if (hours >= 5 && hours < 12) {
+      return 'Bom dia';
+    }
+
+    if (hours < 18) {
+      return 'Boa tarde';
+    }
+
+    return 'Boa noite';
+  }
+
+  isBlockedMessage(message) {
+    if (
+      intents.availableContacts.length > 0 &&
+      !intents.availableContacts.includes(message.sender.name)
+    ) {
+      return true;
+    }
+
+    return message.isGroupMsg || message.type !== 'chat';
+  }
+
+  leftPad(value, totalWidth, paddingChar) {
+    const length = totalWidth - value.toString().length + 1;
+    return Array(length).join(paddingChar || '0') + value;
+  }
+
+  showOptions(attendance, index, option, parent) {
+    const value = parseInt(attendance.messages[index].text, 10);
+
+    const choose = index === 0 ? option : option.options[value];
+
+    if (!choose) {
+      return this.handleInvalidOption(attendance);
+    }
+
+    if (index !== 0 && choose.options && choose.options.back !== true) {
+      this.createBackOptions(choose, attendance, index, parent);
+    }
+
+    if (choose.action) {
+      return this.handleOptionAction(choose, attendance);
+    }
+
+    if (!choose.options) {
+      attendance.messages = removeArrayItems(attendance.messages, 1);
+      return 'Opção não implementada ainda';
+    }
+
+    if (attendance.messages.length - 1 > index) {
+      return this.showOptions(attendance, index + 1, choose, option);
+    }
+
+    return this.getMessageFromOptions(choose.options);
+  }
+
+  handleOptionAction(option, attendance) {
+    if (typeof option.action === 'string') {
+      return this[option.action](attendance);
+    }
+
+    return option.action();
+  }
+
+  getMessageFromOptions(options) {
+    return `Escolha uma opção:
+
+    ${Object.values(options)
+      .map(item => item.message)
+      .join('\n')}
+    `
+      .split('\n')
+      .map(item => item.trim())
+      .join('\n');
+  }
+
+  createBackOptions(option, attendance, index, parent) {
+    option.options = {
+      ...option.options,
+      back: true,
+      [Object.keys(option.options).length + 1]: {
+        message: `${this.leftPad(
+          Object.keys(option.options).length + 1,
+          2
+        )} - Voltar uma opção`,
+        value: Object.keys(option.options).length + 1,
+        action: () => {
+          attendance.messages = removeArrayItems(attendance.messages, 2);
+          return this.showOptions(attendance, index - 1, parent);
+        },
+      },
+    };
+  }
+
+  handleInvalidOption(attendance) {
+    attendance.messages = removeArrayItems(attendance.messages, 1);
+    return 'Opção inválida';
+  }
+
+  getInitialMessage({ message, options }, attendance) {
+    return `${message
+      .join('\n')
+      .replace('{SAUDACAO}', this.getSalution())
+      .replace('{NAME}', attendance.customer.name)}
+
+    ${Object.values(options)
+      .filter(Boolean)
+      .map(op => op.message)
+      .join('\n')};
+    `
+      .split('\n')
+      .map(item => item.trim())
+      .join('\n');
+  }
+
+  finishAttendance(attendance) {
+    attendance.finishedAt = new Date().getTime();
+    return `Ok, estou encerrando seu atendimento por aqui, muito obrigado! 🖖`;
+  }
+}
+
+new Inject().start();

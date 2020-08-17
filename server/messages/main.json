@@ -1,0 +1,53 @@
+{
+  "message": [
+    "🍕 {SAUDACAO} {NAME}, sou Linguini, o chatbot do Tony`s Pizza, estarei te atendendo agora. 🍕\n",
+    "Para começar digite a opção desejada:"
+  ],
+  "getMessage": "getInitialMessage",
+  "options": {
+    "1": {
+      "message": "01 - Fazer pedido",
+      "options": {
+        "1": {
+          "message": "01 - Lanche",
+          "options": {
+            "1": {
+              "message": "01 - Lanche 01"
+            },
+            "2": {
+              "message": "02 - Lanche 02"
+            },
+            "3": {
+              "message": "03 - Lanche 03"
+            }
+          }
+        },
+        "2": {
+          "message": "02 - Pizzas"
+        },
+        "3": {
+          "message": "03 - Porções"
+        },
+        "4": {
+          "message": "04 - Bebidas"
+        },
+        "5": {
+          "message": "05 - Sobremesas"
+        }
+      }
+    },
+    "2": {
+      "message": "02 - Falar com atendente"
+    },
+    "3": {
+      "message": "03 - Saber andamento de pedido"
+    },
+    "4": {
+      "message": "04 - Deixar elogio / critica"
+    },
+    "5": {
+      "message": "05 - Finalizar atendimento",
+      "action": "finishAttendance"
+    }
+  }
+}
