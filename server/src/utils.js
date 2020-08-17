@@ -14,9 +14,9 @@ export function injection(filename) {
   });
 }
 
-export function externalInjection(filename) {
+export function externalInjection(...filenames) {
   return new Promise((resolve, reject) => {
-    const filepath = join(process.cwd(), filename);
+    const filepath = join(process.cwd(), ...filenames);
 
     readFile(filepath, 'utf8', (err, data) => {
       if (err) return reject(err);

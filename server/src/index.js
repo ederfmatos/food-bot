@@ -20,6 +20,8 @@ class App {
   async downloadAndStartThings() {
     try {
       const botjson = externalInjection('bot.json');
+      const messages = await externalInjection('messages', 'main.json');
+
       const appconfig = JSON.parse(await externalInjection('bot.json'));
 
       Logger.start('Downloading chrome\n');
@@ -46,13 +48,11 @@ class App {
       if (argv.proxyURI) {
         pptrArgv.push('--proxy-server=' + argv.proxyURI);
       }
-      const extraArguments = Object.assign({});
-
       const browser = await puppeteer.launch({
         executablePath: revisionInfo.executablePath,
         headless: appconfig.appconfig.headless,
         userDataDir: join(process.cwd(), 'ChromeSession'),
-        devtools: true,
+        devtools: false,
         args: [...constants.DEFAULT_CHROMIUM_ARGS, ...pptrArgv],
         userDataDir: constants.DEFAULT_DATA_DIR,
       });
@@ -88,6 +88,8 @@ class App {
         botjson
           .then(response => this.page.evaluate(`const intents = ${response}`))
           .catch(error => Logger.error(`there was an error \n ${error}`));
+
+        this.page.evaluate(`const messages = ${messages};`);
 
         Logger.stop('Opening Whatsapp ... done!');
         this.page.exposeFunction('log', message => console.log(message));
