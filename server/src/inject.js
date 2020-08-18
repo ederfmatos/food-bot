@@ -19,7 +19,15 @@ class Inject {
         }
 
         const response = this.addNewAttendance(message);
-        WAPI.sendMessage2(message.chatId._serialized, response);
+        if (typeof response === 'string') {
+          return WAPI.sendMessage2(message.chatId._serialized, response);
+        }
+
+        if (Array.isArray(response)) {
+          return response.forEach(item =>
+            WAPI.sendMessage2(message.chatId._serialized, item)
+          );
+        }
       }
     });
   }
@@ -104,17 +112,27 @@ class Inject {
     return Array(length).join(paddingChar || '0') + value;
   }
 
-  showOptions(attendance, index, option, parent) {
+  showOptions(attendance, index, option, messages, parent = null) {
     const value = parseInt(attendance.messages[index].text, 10);
+
+    if (!option.parent) {
+      option.parent = parent;
+    }
 
     const choose = index === 0 ? option : option.options[value];
 
     if (!choose) {
-      return this.handleInvalidOption(attendance);
+      return this.handleInvalidOption(
+        attendance,
+        index,
+        option,
+        messages,
+        parent
+      );
     }
 
     if (index !== 0 && choose.options && choose.options.back !== true) {
-      this.createBackOptions(choose, attendance, index, parent);
+      this.createBackOptions(choose, attendance, index, messages, option);
     }
 
     if (choose.action) {
@@ -123,11 +141,14 @@ class Inject {
 
     if (!choose.options) {
       attendance.messages = removeArrayItems(attendance.messages, 1);
-      return 'Opção não implementada ainda';
+      return [
+        'Opção não implementada ainda',
+        this.showOptions(attendance, index - 1, option, messages, parent),
+      ];
     }
 
     if (attendance.messages.length - 1 > index) {
-      return this.showOptions(attendance, index + 1, choose, option);
+      return this.showOptions(attendance, index + 1, choose, messages, option);
     }
 
     return this.getMessageFromOptions(choose.options);
@@ -135,6 +156,10 @@ class Inject {
 
   handleOptionAction(option, attendance) {
     if (typeof option.action === 'string') {
+      if (!this[option.action]) {
+        throw new Error(`${option.action} is not a function`);
+      }
+
       return this[option.action](attendance);
     }
 
@@ -153,7 +178,7 @@ class Inject {
       .join('\n');
   }
 
-  createBackOptions(option, attendance, index, parent) {
+  createBackOptions(option, attendance, index, messages, parent) {
     option.options = {
       ...option.options,
       back: true,
@@ -165,15 +190,18 @@ class Inject {
         value: Object.keys(option.options).length + 1,
         action: () => {
           attendance.messages = removeArrayItems(attendance.messages, 2);
-          return this.showOptions(attendance, index - 1, parent);
+          return this.showOptions(attendance, index - 1, messages, parent);
         },
       },
     };
   }
 
-  handleInvalidOption(attendance) {
+  handleInvalidOption(attendance, index, option, messages, parent) {
     attendance.messages = removeArrayItems(attendance.messages, 1);
-    return 'Opção inválida';
+    return [
+      'Opção inválida',
+      this.showOptions(attendance, index - 1, option, messages, parent),
+    ];
   }
 
   getInitialMessage({ message, options }, attendance) {
