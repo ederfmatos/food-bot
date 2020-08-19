@@ -40,7 +40,9 @@ function Chat() {
               22:27:13, Hoje
             </MessageTime>
             <MessageText myMessage={index % 2 === 0}>
-              Essa é uma mensagem automatica
+              Essa é uma mensagem automatica hgbfdbdjklfb fhbdfjdh fldkjfbd
+              {index === 3 &&
+                "bjvkdjvsdb hgbs s bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  "}
             </MessageText>
           </Message>
         ))}

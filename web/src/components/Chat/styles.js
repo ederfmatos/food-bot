@@ -73,6 +73,7 @@ export const ChatHistory = styled.ul`
 
 export const Message = styled.li`
   margin-bottom: 15px;
+  min-height: 80px;
 `;
 
 export const MessageText = styled.span`
@@ -83,13 +84,12 @@ export const MessageText = styled.span`
   background: ${green};
   min-width: 200px;
   max-width: 70%;
-  display: block;
-  position: relative;
+  display: inline-block;
 
   ${(props) =>
     props.myMessage &&
     css`
-      right: -260px;
+      float: right;
       background: ${blue};
     `}
 `;
