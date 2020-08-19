@@ -10,7 +10,11 @@ import Logger from './logger';
 import { externalInjection, getFileInBase64, delay } from './utils';
 import * as constants from './constants';
 
-class App {
+export default class App {
+  static newInstance() {
+    return new App();
+  }
+
   async start() {
     await this.downloadAndStartThings();
 
@@ -160,5 +164,3 @@ class App {
     }
   }
 }
-
-new App().start();

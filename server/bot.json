@@ -2,7 +2,10 @@
   "appconfig": {
     "headless": true
   },
-  "blocked": [],
-  "noMatch": "Essa é uma mensagem automática, por favor, desconsidere",
-  "availableContacts": ["Allan Henrique", "Brenda Lorençon", "Daniel Donatto"]
+  "availableContacts": [
+    "Allan Henrique",
+    "Brenda Lorençon",
+    "Daniel Donatto",
+    "Wellington"
+  ]
 }

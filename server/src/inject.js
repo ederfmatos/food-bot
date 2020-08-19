@@ -1,8 +1,10 @@
+console.log('oba');
+
 function removeArrayItems(list, count) {
   return list.slice(0, list.length - count);
 }
 
-class Inject {
+class App {
   constructor() {
     this.attendances = [];
   }
@@ -107,12 +109,12 @@ class Inject {
     return message.isGroupMsg || message.type !== 'chat';
   }
 
-  leftPad(value, totalWidth, paddingChar) {
+  leftPad(value, totalWidth, paddingChar = '0') {
     const length = totalWidth - value.toString().length + 1;
-    return Array(length).join(paddingChar || '0') + value;
+    return Array(length).join(paddingChar) + value;
   }
 
-  showOptions(attendance, index, option, messages, parent = null) {
+  showOptions(attendance, index, option, parent = null) {
     const value = parseInt(attendance.messages[index].text, 10);
 
     if (!option.parent) {
@@ -122,17 +124,11 @@ class Inject {
     const choose = index === 0 ? option : option.options[value];
 
     if (!choose) {
-      return this.handleInvalidOption(
-        attendance,
-        index,
-        option,
-        messages,
-        parent
-      );
+      return this.handleInvalidOption(attendance, index, option, parent);
     }
 
     if (index !== 0 && choose.options && choose.options.back !== true) {
-      this.createBackOptions(choose, attendance, index, messages, option);
+      this.createBackOptions(choose, attendance, index, option);
     }
 
     if (choose.action) {
@@ -140,18 +136,22 @@ class Inject {
     }
 
     if (!choose.options) {
-      attendance.messages = removeArrayItems(attendance.messages, 1);
-      return [
-        'Opção não implementada ainda',
-        this.showOptions(attendance, index - 1, option, messages, parent),
-      ];
+      return this.handleOptionNotImplemented(attendance, index, option, parent);
     }
 
     if (attendance.messages.length - 1 > index) {
-      return this.showOptions(attendance, index + 1, choose, messages, option);
+      return this.showOptions(attendance, index + 1, choose, option);
     }
 
     return this.getMessageFromOptions(choose.options);
+  }
+
+  handleOptionNotImplemented(attendance, index, option, parent) {
+    attendance.messages = removeArrayItems(attendance.messages, 1);
+    return [
+      'Opção não implementada ainda',
+      this.showOptions(attendance, index - 1, option, parent),
+    ];
   }
 
   handleOptionAction(option, attendance) {
@@ -178,7 +178,7 @@ class Inject {
       .join('\n');
   }
 
-  createBackOptions(option, attendance, index, messages, parent) {
+  createBackOptions(option, attendance, index, parent) {
     option.options = {
       ...option.options,
       back: true,
@@ -190,17 +190,17 @@ class Inject {
         value: Object.keys(option.options).length + 1,
         action: () => {
           attendance.messages = removeArrayItems(attendance.messages, 2);
-          return this.showOptions(attendance, index - 1, messages, parent);
+          return this.showOptions(attendance, index - 1, parent);
         },
       },
     };
   }
 
-  handleInvalidOption(attendance, index, option, messages, parent) {
+  handleInvalidOption(attendance, index, option, parent) {
     attendance.messages = removeArrayItems(attendance.messages, 1);
     return [
       'Opção inválida',
-      this.showOptions(attendance, index - 1, option, messages, parent),
+      this.showOptions(attendance, index - 1, option, parent),
     ];
   }
 
@@ -225,5 +225,5 @@ class Inject {
     return `Ok, estou encerrando seu atendimento por aqui, muito obrigado! 🖖`;
   }
 }
-
-new Inject().start();
+const app = new App();
+app.start();

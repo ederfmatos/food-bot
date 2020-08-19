@@ -20,7 +20,8 @@
             "3": {
               "message": "03 - Lanche 03"
             }
-          }
+          },
+          "globalAction": "getQuantity"
         },
         "2": {
           "message": "02 - Pizzas"
