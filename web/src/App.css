@@ -1,0 +1,32 @@
+* {
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  overflow: hidden !important;
+  background: #444753;
+  font: 14px/20px "Lato", Arial, sans-serif;
+  color: white;
+}
+
+li {
+  list-style: none;
+}
+
+.App {
+  text-align: center;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+.u-fullHeight {
+  height: 100%;
+}
