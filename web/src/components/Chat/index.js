@@ -52,7 +52,7 @@ function Chat() {
 
       <ChatHistory>
         {messages.map((message, index) => (
-          <Message>
+          <Message key={message}>
             <MessageTime myMessage={index % 2 === 0}>
               22:27:13, Hoje
             </MessageTime>

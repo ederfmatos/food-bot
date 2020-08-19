@@ -5,12 +5,16 @@ import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import Home from "./pages/Home";
 
+import { SocketProvider } from "./contexts/socket";
+
 export default class App extends Component {
   render() {
     return (
       <>
-        <Home />
-        <ToastContainer autoClose={3200} />
+        <SocketProvider>
+          <Home />
+          <ToastContainer autoClose={3200} />
+        </SocketProvider>
       </>
     );
   }
