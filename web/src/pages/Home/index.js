@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <Container>
       <PeopleList>
-        <div class="search">
+        <div className="search">
           <input type="text" placeholder="Pesquisar por cliente" />
         </div>
 

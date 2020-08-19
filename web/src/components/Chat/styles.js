@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-
+import { FaBars } from "react-icons/fa";
 import { lighten, darken } from "polished";
 import { gray, green, blue } from "../../styles/colors";
 
@@ -16,6 +16,12 @@ export const Header = styled.header`
   padding: 20px;
   border-bottom: 2px solid white;
   display: flex;
+
+  #dropdown_actions {
+    position: absolute;
+    right: 15px;
+    top: 30px;
+  }
 `;
 
 export const UserAvatar = styled.img`
@@ -140,4 +146,12 @@ export const SendButton = styled.button`
   &:hover {
     background: #ddd;
   }
+`;
+
+export const ToggleBotButton = styled(FaBars)`
+  font-size: 26px;
+  position: absolute;
+  right: 15px;
+  top: 0px;
+  cursor: pointer;
 `;

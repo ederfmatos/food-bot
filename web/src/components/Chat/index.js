@@ -13,12 +13,26 @@ import {
   Footer,
   TextArea,
   SendButton,
+  ToggleBotButton,
 } from "./styles";
 
-import Status from "../Status";
+import { Status, Dropdown } from "../";
+const { remote } = window.require("electron");
 
 function Chat() {
   const messages = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const dropdownItems = [
+    {
+      key: "block_user",
+      label: "Bloquear Usuário",
+    },
+    {
+      key: "close",
+      label: "Fechar",
+      onClick: () => remote.getCurrentWindow().close(),
+    },
+  ];
+
   return (
     <Container>
       <Header>
@@ -26,11 +40,14 @@ function Chat() {
           src="https://pm1.narvii.com/6410/289cb2566499e20940047f14775d8d3b2bb8ce08_00.jpg"
           alt="avatar"
         />
-
         <AboutContainer>
           <UserName>Irineu da Silva</UserName>
           <Status online={true}>Online</Status>
         </AboutContainer>
+
+        <Dropdown id="dropdown_actions" items={dropdownItems}>
+          <ToggleBotButton />
+        </Dropdown>
       </Header>
 
       <ChatHistory>
