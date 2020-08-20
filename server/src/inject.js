@@ -30,7 +30,11 @@ class App {
 
               const response = {
                 id: chat.id,
-                name: contact.pushname,
+                name:
+                  contact.pushname ||
+                  contact.name ||
+                  contact.formattedName ||
+                  contact.shortName,
                 avatar: contact.profilePicThumbObj.eurl,
                 phoneNumber: contact.id.user,
                 online: await WAPI.isChatOnline(chat.id),
