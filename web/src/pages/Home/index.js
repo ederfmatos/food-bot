@@ -5,7 +5,7 @@ import { Container, PeopleList, PeopleListContent } from "./styles";
 import { useSocket } from "../../contexts/socket";
 
 export default function Home() {
-  const { chats } = useSocket();
+  const { chats, currentUser, setCurrentUser } = useSocket();
 
   return (
     <Container>
@@ -16,12 +16,16 @@ export default function Home() {
 
         <PeopleListContent>
           {chats.map((chat) => (
-            <PeopleListItem key={chat.id} user={chat} />
+            <PeopleListItem
+              key={chat.id}
+              user={chat}
+              onClick={() => setCurrentUser(chat)}
+            />
           ))}
         </PeopleListContent>
       </PeopleList>
 
-      <Chat />
+      <Chat user={currentUser} />
     </Container>
   );
 }

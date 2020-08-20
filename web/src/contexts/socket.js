@@ -13,20 +13,31 @@ const SocketContext = createContext({});
 
 const SocketProvider = ({ children }) => {
   const socket = useMemo(() => socketIOClient(ENDPOINT), []);
+  const [currentUser, setCurrentUser] = useState({});
+
   const [chats, setChats] = useState([]);
 
   useEffect(() => {
     socket.emit("hello", "Frontend");
 
-    socket.on("sendContacts", (response) => {
-      setChats(() => response);
-    });
+    socket.on("sendContacts", (response) => setChats(response));
   }, [socket]);
+
+  useEffect(() => {
+    if (
+      (!currentUser.id && chats.length) ||
+      (chats.length && currentUser.online !== chats[0].online)
+    ) {
+      setCurrentUser(chats[0]);
+    }
+  }, [chats, setCurrentUser, currentUser]);
 
   return (
     <SocketContext.Provider
       value={{
         chats,
+        currentUser,
+        setCurrentUser,
       }}
     >
       {children}

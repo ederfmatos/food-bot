@@ -19,7 +19,7 @@ import {
 import { Status, Dropdown } from "../";
 const { remote } = window.require("electron");
 
-function Chat() {
+function Chat({ user }) {
   const messages = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   const dropdownItems = [
     {
@@ -42,12 +42,16 @@ function Chat() {
     <Container>
       <Header>
         <UserAvatar
-          src="https://pm1.narvii.com/6410/289cb2566499e20940047f14775d8d3b2bb8ce08_00.jpg"
+          src={
+            user.avatar ||
+            "https://api.adorable.io/avatars/245/abott@adorable.png"
+          }
+          online={user.online}
           alt="avatar"
         />
         <AboutContainer>
-          <UserName>Irineu da Silva</UserName>
-          <Status online={true}>Online</Status>
+          <UserName>{user.name}</UserName>
+          <Status online={user.online} />
         </AboutContainer>
 
         <Dropdown id="dropdown_actions" items={dropdownItems}>

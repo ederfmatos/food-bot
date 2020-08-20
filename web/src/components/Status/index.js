@@ -2,8 +2,8 @@ import React from "react";
 
 import { Container } from "./styles";
 
-function Status({ online, children }) {
-  return <Container online={online}>{children}</Container>;
+function Status({ online }) {
+  return <Container online={online}>{online ? "Online" : "Offline"}</Container>;
 }
 
 export default Status;

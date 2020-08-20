@@ -28,17 +28,7 @@ export const UserAvatar = styled.img`
   width: 50px;
   border-radius: 50%;
   position: relative;
-  border: 2px solid ${green};
-
-  &::after {
-    content: "";
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: red;
-  }
+  border: 2px solid ${(props) => (props.online ? green : "red")};
 `;
 
 export const AboutContainer = styled.div`

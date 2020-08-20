@@ -27,6 +27,7 @@ export const PeopleAvatar = styled.img`
   height: 60px;
   border-radius: 50%;
   position: relative;
+  border: 2px solid ${(props) => (props.online ? "green" : "red")};
 
   &::after {
     content: "";
