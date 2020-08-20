@@ -27,6 +27,11 @@ function Chat() {
       label: "Bloquear Usuário",
     },
     {
+      key: "minimize",
+      label: "Minimizar",
+      onClick: () => remote.getCurrentWindow().minimize(),
+    },
+    {
       key: "close",
       label: "Fechar",
       onClick: () => remote.getCurrentWindow().close(),
