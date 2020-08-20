@@ -8,7 +8,7 @@ class App {
       this.socket = io('http://localhost:4000');
       this.socket.emit('hello', 'Backend');
       this.sendContacts();
-      this.sendContactsId = setInterval(() => this.sendContacts(), 15000);
+      this.sendContactsId = setInterval(() => this.sendContacts(), 2000);
     }, 4000);
 
     this.attendances = [];

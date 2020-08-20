@@ -18,7 +18,9 @@ function PeopleListItem({ user }) {
       <AboutContainer>
         <Name>{user.name}</Name>
 
-        <Status online={true}>online</Status>
+        <Status online={user.online}>
+          {user.online ? "Online" : "Offline"}
+        </Status>
       </AboutContainer>
     </Container>
   );
