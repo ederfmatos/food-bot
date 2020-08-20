@@ -24,6 +24,7 @@ export const Container = styled.li`
 
 export const PeopleAvatar = styled.img`
   width: 60px;
+  height: 60px;
   border-radius: 50%;
   position: relative;
 
@@ -34,7 +35,6 @@ export const PeopleAvatar = styled.img`
     position: absolute;
     top: 0;
     left: 0;
-    background: red;
   }
 `;
 

@@ -9,7 +9,9 @@ const server = http.createServer(express());
 const io = socketIo(server); // < Interesting!
 
 io.on('connection', socket => {
-  console.log('New client connected');
+  socket.on('hello', who => console.log(`Hello World of ${who}`));
+
+  socket.on('sendContacts', contacts => io.emit('sendContacts', contacts));
 });
 
 server.listen(port, () => {

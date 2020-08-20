@@ -1,4 +1,10 @@
-import React, { createContext, useEffect, useContext, useMemo } from "react";
+import React, {
+  createContext,
+  useEffect,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 
 import socketIOClient from "socket.io-client";
 const ENDPOINT = "http://localhost:4000";
@@ -7,15 +13,20 @@ const SocketContext = createContext({});
 
 const SocketProvider = ({ children }) => {
   const socket = useMemo(() => socketIOClient(ENDPOINT), []);
+  const [chats, setChats] = useState([]);
 
   useEffect(() => {
-    console.log(socket);
-  }, []);
+    socket.emit("hello", "Frontend");
+
+    socket.on("sendContacts", (response) => {
+      setChats(() => response);
+    });
+  }, [socket]);
 
   return (
     <SocketContext.Provider
       value={{
-        mostra: () => console.log("Oba"),
+        chats,
       }}
     >
       {children}

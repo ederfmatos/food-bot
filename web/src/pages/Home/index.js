@@ -1,12 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { PeopleListItem, Chat } from "../../components";
 import { Container, PeopleList, PeopleListContent } from "./styles";
 import { useSocket } from "../../contexts/socket";
 
 export default function Home() {
-  const users = [1, 2, 3, 4, 5, 6, 7, 8, 0];
-  const socket = useSocket();
+  const { chats } = useSocket();
 
   return (
     <Container>
@@ -16,8 +15,8 @@ export default function Home() {
         </div>
 
         <PeopleListContent>
-          {users.map((user) => (
-            <PeopleListItem key={user} user={user} />
+          {chats.map((chat) => (
+            <PeopleListItem key={chat.id} user={chat} />
           ))}
         </PeopleListContent>
       </PeopleList>

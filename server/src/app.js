@@ -114,6 +114,11 @@ export default class App {
         await page.addScriptTag({ path: require.resolve(filepath) });
         filepath = join(__dirname, 'inject.js');
         await page.addScriptTag({ path: require.resolve(filepath) });
+        filepath = join(__dirname, 'libs', 'socket.min.js');
+        await page.addScriptTag({
+          url:
+            'https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js',
+        });
         return true;
       })
       .catch(() => {

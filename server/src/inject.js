@@ -1,12 +1,50 @@
-console.log('oba');
-
 function removeArrayItems(list, count) {
   return list.slice(0, list.length - count);
 }
 
 class App {
   constructor() {
+    setTimeout(() => {
+      this.socket = io('http://localhost:4000');
+      this.socket.emit('hello', 'Backend');
+      this.sendContacts();
+      this.sendContactsId = setInterval(() => this.sendContacts(), 15000);
+    }, 4000);
+
     this.attendances = [];
+  }
+
+  async sendContacts() {
+    try {
+      const chats = await WAPI.getAllChatsWithMessages().then(JSON.parse);
+
+      const contacts = await Promise.all(
+        chats.map(
+          chat =>
+            new Promise(async resolve => {
+              const { contact, isGroup } = WAPI.getChatById(chat.id);
+
+              if (isGroup) {
+                return resolve(null);
+              }
+
+              const response = {
+                id: chat.id,
+                name: contact.pushname,
+                avatar: contact.profilePicThumbObj.eurl,
+                phoneNumber: contact.id.user,
+                online: await WAPI.isChatOnline(chat.id),
+              };
+
+              return resolve(response);
+            })
+        )
+      );
+
+      this.socket.emit('sendContacts', contacts.filter(Boolean));
+    } catch (error) {
+      window.log(`Error: ${error}`);
+    }
   }
 
   start() {

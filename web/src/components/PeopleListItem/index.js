@@ -8,12 +8,15 @@ function PeopleListItem({ user }) {
   return (
     <Container>
       <PeopleAvatar
-        src="https://pm1.narvii.com/6410/289cb2566499e20940047f14775d8d3b2bb8ce08_00.jpg"
+        src={
+          user.avatar ||
+          "https://api.adorable.io/avatars/245/abott@adorable.png"
+        }
         alt="avatar"
       />
 
       <AboutContainer>
-        <Name>Irireu da Silva</Name>
+        <Name>{user.name}</Name>
 
         <Status online={true}>online</Status>
       </AboutContainer>
