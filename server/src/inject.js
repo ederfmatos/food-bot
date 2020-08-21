@@ -16,49 +16,56 @@ class App {
   }
 
   setSocketEvents() {
-    this.socket.on('findCurrentUser', async id => {
-      try {
-        window.log('Find user');
+    this.socket.on('findCurrentUser', this.findCurrentUser.bind(this));
+    this.socket.on('sendMessage', this.sendMessage.bind(this));
+  }
 
-        const { contact } = WAPI.getChatById(id);
+  async findCurrentUser(id) {
+    try {
+      window.log('Find user');
 
-        const response = {
-          id,
-          name:
-            contact.pushname ||
-            contact.name ||
-            contact.formattedName ||
-            contact.shortName,
-          avatar: contact.profilePicThumbObj.eurl,
-          phoneNumber: contact.id.user,
-        };
+      const { contact } = WAPI.getChatById(id);
 
-        const [online, messages] = await Promise.all([
-          WAPI.isChatOnline(id),
-          WAPI.getAllMessagesInChat(id, true),
-        ]);
+      const response = {
+        id,
+        name:
+          contact.pushname ||
+          contact.name ||
+          contact.formattedName ||
+          contact.shortName,
+        avatar: contact.profilePicThumbObj.eurl,
+        phoneNumber: contact.id.user,
+      };
 
-        // if (!WAPI.areAllMessagesLoaded(id)) {
-        //   WAPI.loadAndGetAllMessagesInChat(id);
-        // }
+      const [online, messages] = await Promise.all([
+        WAPI.isChatOnline(id),
+        WAPI.getAllMessagesInChat(id, true),
+      ]);
 
-        response.online = online;
-        response.messages = messages
-          .filter(
-            message =>
-              Boolean(message.content) && !message.filename && !message.filehash
-          )
-          .map(message => ({
-            timestamp: message.timestamp * 1000,
-            text: message.content,
-            myMessage: message.fromMe,
-          }));
+      // if (!WAPI.areAllMessagesLoaded(id)) {
+      //   WAPI.loadAndGetAllMessagesInChat(id);
+      // }
 
-        this.socket.emit('findUserById', response);
-      } catch (error) {
-        window.log(`Error: ${error}`);
-      }
-    });
+      response.online = online;
+      response.messages = messages
+        .filter(
+          message =>
+            Boolean(message.content) && !message.filename && !message.filehash
+        )
+        .map(message => ({
+          timestamp: message.timestamp * 1000,
+          text: message.content,
+          myMessage: message.fromMe,
+        }));
+
+      this.socket.emit('findUserById', response);
+    } catch (error) {
+      window.log(`Error: ${error}`);
+    }
+  }
+
+  sendMessage({ id, message }) {
+    WAPI.sendMessage2(id, message);
   }
 
   async sendContacts() {

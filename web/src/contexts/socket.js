@@ -50,6 +50,18 @@ const SocketProvider = ({ children }) => {
         chats,
         currentUser,
         setCurrentUser: findCurrentUser,
+        addMessage(message) {
+          setCurrentUser({
+            ...currentUser,
+            messages: [...currentUser.messages, message],
+          });
+        },
+        emit() {
+          socket.emit(...arguments);
+        },
+        on() {
+          socket.on(...arguments);
+        },
       }}
     >
       {children}

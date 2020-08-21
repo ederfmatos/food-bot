@@ -13,6 +13,8 @@ io.on('connection', socket => {
   socket.on('sendContacts', contacts => io.emit('sendContacts', contacts));
   socket.on('findCurrentUser', id => io.emit('findCurrentUser', id));
   socket.on('findUserById', response => io.emit('findUserById', response));
+  socket.on('sendMessage', response => io.emit('sendMessage', response));
+  socket.on('receiveMessage', response => io.emit('receiveMessage', response));
 });
 
 server.listen(port, () => {

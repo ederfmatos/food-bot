@@ -5,7 +5,7 @@ import { Container, PeopleList, PeopleListContent } from "./styles";
 import { useSocket } from "../../contexts/socket";
 
 export default function Home() {
-  const { chats, currentUser, setCurrentUser } = useSocket();
+  const { chats, setCurrentUser } = useSocket();
 
   return (
     <Container>
@@ -25,7 +25,7 @@ export default function Home() {
         </PeopleListContent>
       </PeopleList>
 
-      <Chat user={currentUser} />
+      <Chat />
     </Container>
   );
 }
