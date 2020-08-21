@@ -84,8 +84,11 @@ function Chat() {
 
       <ChatHistory ref={historyRef}>
         {(currentUser.messages || []).map((message, index) => (
-          <Message key={`message-${currentUser.name}-${index}`}>
-            <MessageTime myMessage={message.myMessage}>
+          <Message
+            key={`message-${currentUser.name}-${index}`}
+            myMessage={message.myMessage}
+          >
+            <MessageTime>
               {new Date(message.timestamp).toLocaleTimeString()}
             </MessageTime>
 

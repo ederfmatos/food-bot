@@ -3,7 +3,7 @@ import { FaBars } from "react-icons/fa";
 import { lighten, darken } from "polished";
 import { gray, green, blue } from "../../styles/colors";
 
-export const Container = styled.div`
+export const Container = styled.main`
   width: 920px;
   background: #f2f5f8;
   border-top-right-radius: 5px;
@@ -49,7 +49,9 @@ export const ChatHistory = styled.ul`
   overflow: hidden;
   overflow-y: scroll;
   height: 600px;
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
+  display: flex;
+  flex-direction: column;
 
   ::-webkit-scrollbar-track {
     background: #cccccc99;
@@ -69,8 +71,18 @@ export const ChatHistory = styled.ul`
 `;
 
 export const Message = styled.li`
-  margin-bottom: 15px;
-  min-height: 80px;
+  margin: 10px 0;
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  ${(props) =>
+    props.myMessage &&
+    css`
+      align-items: flex-end;
+    `};
 `;
 
 export const MessageText = styled.span`
@@ -79,30 +91,21 @@ export const MessageText = styled.span`
   font-size: 16px;
   border-radius: 7px;
   background: ${green};
-  min-width: 200px;
+  /* min-width: 200px; */
   max-width: 70%;
-  display: inline-block;
   word-break: break-all;
+  white-space: pre-line;
 
   ${(props) =>
     props.myMessage &&
     css`
-      float: right;
       background: ${blue};
     `};
 `;
 
 export const MessageTime = styled.time`
   color: ${lighten(0.6, gray)};
-  display: block;
   margin-bottom: 5px;
-  position: relative;
-
-  ${(props) =>
-    props.myMessage &&
-    css`
-      right: -790px;
-    `}
 `;
 
 export const Footer = styled.footer`
