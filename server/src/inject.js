@@ -105,6 +105,10 @@ class App {
     }
   }
 
+  receiveMessage(message) {
+    this.socket.emit('receiveMessage', message);
+  }
+
   start() {
     this.waitNewMessages();
   }
@@ -112,6 +116,13 @@ class App {
   waitNewMessages() {
     WAPI.waitNewMessages(false, async messages => {
       for (const message of messages) {
+        this.receiveMessage({
+          timestamp: message.timestamp * 1000,
+          text: message.content,
+          myMessage: false,
+          user: message.chat.id._serialized,
+        });
+
         if (this.isBlockedMessage(message)) {
           continue;
         }

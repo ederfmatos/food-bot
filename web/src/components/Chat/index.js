@@ -41,7 +41,7 @@ function Chat() {
   const [message, setMessage] = useState("");
   const historyRef = createRef();
 
-  const { addMessage, currentUser, emit } = useSocket();
+  const { addMessage, currentUser, emit, on } = useSocket();
 
   const sendMessage = useCallback(() => {
     emit("sendMessage", { id: currentUser.id, message });
@@ -52,6 +52,14 @@ function Chat() {
       timestamp: new Date().getTime(),
     });
   }, [message]);
+
+  useEffect(() => {
+    on("receiveMessage", (message) => {
+      if (message.user === currentUser.id) {
+        addMessage(message);
+      }
+    });
+  }, [on]);
 
   useEffect(() => {
     setMessage("");
