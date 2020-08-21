@@ -81,13 +81,14 @@ export const MessageText = styled.span`
   min-width: 200px;
   max-width: 70%;
   display: inline-block;
+  word-break: break-all;
 
   ${(props) =>
     props.myMessage &&
     css`
       float: right;
       background: ${blue};
-    `}
+    `};
 `;
 
 export const MessageTime = styled.time`

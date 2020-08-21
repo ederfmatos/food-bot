@@ -8,10 +8,54 @@ class App {
       this.socket = io('http://localhost:4000');
       this.socket.emit('hello', 'Backend');
       this.sendContacts();
-      this.sendContactsId = setInterval(() => this.sendContacts(), 2000);
+      this.sendContactsId = setInterval(() => this.sendContacts(), 5000);
+      this.setSocketEvents();
     }, 4000);
 
     this.attendances = [];
+  }
+
+  setSocketEvents() {
+    this.socket.on('findCurrentUser', async id => {
+      try {
+        window.log('Find user');
+
+        const { contact } = WAPI.getChatById(id);
+
+        const response = {
+          id,
+          name:
+            contact.pushname ||
+            contact.name ||
+            contact.formattedName ||
+            contact.shortName,
+          avatar: contact.profilePicThumbObj.eurl,
+          phoneNumber: contact.id.user,
+        };
+
+        const [online, messages] = await Promise.all([
+          WAPI.isChatOnline(id),
+          WAPI.getAllMessagesInChat(id, true),
+        ]);
+
+        if (!WAPI.areAllMessagesLoaded(id)) {
+          WAPI.loadAndGetAllMessagesInChat(id);
+        }
+
+        response.online = online;
+        response.messages = messages
+          .filter(message => Boolean(message.content) && !message.filename)
+          .map(message => ({
+            timestamp: message.timestamp * 1000,
+            text: message.content,
+            myMessage: message.fromMe,
+          }));
+
+        this.socket.emit('findUserById', response);
+      } catch (error) {
+        window.log(`Error: ${error}`);
+      }
+    });
   }
 
   async sendContacts() {

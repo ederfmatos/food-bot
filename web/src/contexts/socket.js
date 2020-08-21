@@ -4,6 +4,7 @@ import React, {
   useContext,
   useMemo,
   useState,
+  useCallback,
 } from "react";
 
 import socketIOClient from "socket.io-client";
@@ -20,24 +21,35 @@ const SocketProvider = ({ children }) => {
   useEffect(() => {
     socket.emit("hello", "Frontend");
 
-    socket.on("sendContacts", (response) => setChats(response));
-  }, [socket]);
+    socket.on("sendContacts", (contacts) => setChats(contacts));
+    socket.on("findUserById", (user) => {
+      setCurrentUser({ ...user, force: true });
+    });
+  }, [socket, setCurrentUser, setChats]);
 
-  useEffect(() => {
-    if (
-      (!currentUser.id && chats.length) ||
-      (chats.length && currentUser.online !== chats[0].online)
-    ) {
-      setCurrentUser(chats[0]);
-    }
-  }, [chats, setCurrentUser, currentUser]);
+  const findCurrentUser = useCallback(
+    ({ id }) => {
+      socket.emit("findCurrentUser", id);
+    },
+    [socket]
+  );
+
+  // useEffect(() => {
+  //   if (chats.length === 0) {
+  //     return;
+  //   }
+
+  //   if (!currentUser.id || currentUser.online !== chats[0].online) {
+  //     findCurrentUser(chats[0]);
+  //   }
+  // }, [currentUser]);
 
   return (
     <SocketContext.Provider
       value={{
         chats,
         currentUser,
-        setCurrentUser,
+        setCurrentUser: findCurrentUser,
       }}
     >
       {children}

@@ -19,25 +19,24 @@ import {
 import { Status, Dropdown } from "../";
 const { remote } = window.require("electron");
 
-function Chat({ user }) {
-  const messages = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const dropdownItems = [
-    {
-      key: "block_user",
-      label: "Bloquear Usuário",
-    },
-    {
-      key: "minimize",
-      label: "Minimizar",
-      onClick: () => remote.getCurrentWindow().minimize(),
-    },
-    {
-      key: "close",
-      label: "Fechar",
-      onClick: () => remote.getCurrentWindow().close(),
-    },
-  ];
+const dropdownItems = [
+  {
+    key: "block_user",
+    label: "Bloquear Usuário",
+  },
+  {
+    key: "minimize",
+    label: "Minimizar",
+    onClick: () => remote.getCurrentWindow().minimize(),
+  },
+  {
+    key: "close",
+    label: "Fechar",
+    onClick: () => remote.getCurrentWindow().close(),
+  },
+];
 
+function Chat({ user }) {
   return (
     <Container>
       <Header>
@@ -60,15 +59,13 @@ function Chat({ user }) {
       </Header>
 
       <ChatHistory>
-        {messages.map((message, index) => (
-          <Message key={message}>
-            <MessageTime myMessage={index % 2 === 0}>
-              22:27:13, Hoje
+        {(user.messages || []).map((message, index) => (
+          <Message key={`message-${user.name}-${index}`}>
+            <MessageTime myMessage={message.myMessage}>
+              {new Date(message.timestamp).toLocaleTimeString()}
             </MessageTime>
-            <MessageText myMessage={index % 2 === 0}>
-              Essa é uma mensagem automatica hgbfdbdjklfb fhbdfjdh fldkjfbd
-              {index === 3 &&
-                "bjvkdjvsdb hgbs s bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  bjvkdjvsdb hgbs s  "}
+            <MessageText myMessage={message.myMessage}>
+              {message.text}
             </MessageText>
           </Message>
         ))}
