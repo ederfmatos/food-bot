@@ -49,6 +49,7 @@ export const ChatHistory = styled.ul`
   overflow: hidden;
   overflow-y: scroll;
   height: 600px;
+  scroll-behavior: smooth;
 
   ::-webkit-scrollbar-track {
     background: #cccccc99;

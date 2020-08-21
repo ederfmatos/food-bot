@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, createRef } from "react";
 
 import {
   Container,
@@ -37,6 +37,14 @@ const dropdownItems = [
 ];
 
 function Chat({ user }) {
+  const historyRef = createRef();
+
+  useEffect(() => {
+    if (historyRef.current) {
+      historyRef.current.scrollTo(0, historyRef.current.scrollHeight);
+    }
+  }, [user, user.messages]);
+
   return (
     <Container>
       <Header>
@@ -58,7 +66,7 @@ function Chat({ user }) {
         </Dropdown>
       </Header>
 
-      <ChatHistory>
+      <ChatHistory ref={historyRef}>
         {(user.messages || []).map((message, index) => (
           <Message key={`message-${user.name}-${index}`}>
             <MessageTime myMessage={message.myMessage}>

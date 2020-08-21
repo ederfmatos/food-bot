@@ -38,13 +38,16 @@ class App {
           WAPI.getAllMessagesInChat(id, true),
         ]);
 
-        if (!WAPI.areAllMessagesLoaded(id)) {
-          WAPI.loadAndGetAllMessagesInChat(id);
-        }
+        // if (!WAPI.areAllMessagesLoaded(id)) {
+        //   WAPI.loadAndGetAllMessagesInChat(id);
+        // }
 
         response.online = online;
         response.messages = messages
-          .filter(message => Boolean(message.content) && !message.filename)
+          .filter(
+            message =>
+              Boolean(message.content) && !message.filename && !message.filehash
+          )
           .map(message => ({
             timestamp: message.timestamp * 1000,
             text: message.content,
