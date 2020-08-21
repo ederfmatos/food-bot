@@ -101,7 +101,7 @@ export const MessageTime = styled.time`
   ${(props) =>
     props.myMessage &&
     css`
-      right: -760px;
+      right: -790px;
     `}
 `;
 
@@ -134,6 +134,16 @@ export const SendButton = styled.button`
   background: #fff;
   transition: all 0.2s;
   border-radius: 8px;
+
+  &:disabled {
+    cursor: not-allowed;
+    pointer-events: all !important;
+    background: #eee;
+
+    &:hover {
+      background: #eee !important;
+    }
+  }
 
   &:hover {
     background: #ddd;
