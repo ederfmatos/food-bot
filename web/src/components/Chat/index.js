@@ -18,7 +18,7 @@ import {
 
 import { Status, Dropdown } from "../";
 import { useSocket } from "../../contexts/socket";
-const { remote } = window.require("electron");
+const { remote, shell } = window.require("electron");
 
 const dropdownItems = [
   {
@@ -52,6 +52,13 @@ function Chat() {
       timestamp: new Date().getTime(),
     });
   }, [message]);
+
+  const handleMessageClick = useCallback((event, message) => {
+    if (message.type === "url") {
+      event.preventDefault();
+      shell.openExternal(message.text);
+    }
+  }, []);
 
   useEffect(() => {
     on("receiveMessage", (message) => {
@@ -100,7 +107,11 @@ function Chat() {
               {new Date(message.timestamp).toLocaleTimeString()}
             </MessageTime>
 
-            <MessageText myMessage={message.myMessage}>
+            <MessageText
+              myMessage={message.myMessage}
+              type={message.type}
+              onClick={(event) => handleMessageClick(event, message)}
+            >
               {message.text}
             </MessageText>
           </Message>

@@ -56,6 +56,7 @@ class App {
           timestamp: message.timestamp * 1000,
           text: message.content,
           myMessage: message.fromMe,
+          type: message.subtype,
         }));
 
       this.socket.emit('findUserById', response);

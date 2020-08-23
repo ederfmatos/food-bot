@@ -71,7 +71,6 @@ export const ChatHistory = styled.ul`
 `;
 
 export const Message = styled.li`
-  margin: 10px 0;
   width: 100%;
   padding: 10px;
   display: flex;
@@ -91,7 +90,6 @@ export const MessageText = styled.span`
   font-size: 16px;
   border-radius: 7px;
   background: ${green};
-  /* min-width: 200px; */
   max-width: 70%;
   word-break: break-all;
   white-space: pre-line;
@@ -100,6 +98,19 @@ export const MessageText = styled.span`
     props.myMessage &&
     css`
       background: ${blue};
+    `};
+
+  ${(props) =>
+    props.type === "url" &&
+    css`
+      color: #0277bd;
+      text-decoration: underline;
+      cursor: pointer;
+      transition: color: 0.12s;
+
+      &:hover {
+        color: #039be5;
+      }
     `};
 `;
 
