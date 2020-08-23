@@ -27,6 +27,17 @@ const SocketProvider = ({ children }) => {
     });
   }, [socket, setCurrentUser, setChats]);
 
+  useEffect(() => {
+    if (!currentUser.id) return;
+    const currentUserInChat = chats.find((chat) => chat.id === currentUser.id);
+
+    if (!currentUserInChat) return;
+
+    if (currentUser.online !== currentUserInChat.online) {
+      setCurrentUser({ ...currentUser, online: currentUserInChat.online });
+    }
+  }, [chats]);
+
   const findCurrentUser = useCallback(
     ({ id }) => {
       socket.emit("findCurrentUser", id);
